@@ -1,8 +1,8 @@
 import React from 'react';
-import './App.css';
+import './assets/styles/style.css';
 import defaultDataset from './dataset';
 
-export default class App extends React.Component() {
+export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,8 +15,11 @@ export default class App extends React.Component() {
   }
   render(){
     return (
-      <div>
-      </div>
+      <section className="c-section">
+        <div className="c-box">
+          {this.state.currentId}
+        </div>
+      </section>
     );
   }
 }
