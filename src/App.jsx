@@ -1,6 +1,6 @@
 import React from 'react';
 import './assets/styles/style.css';
-import defaultDataset from './dataset';
+import defaultDataset from './dataset.json';
 import { AnswersList, Chats } from './components/index';
 import FormDialog from './components/Forms/FormDialog';
 
