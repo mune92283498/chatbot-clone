@@ -1,8 +1,8 @@
 import React from 'react';
 import './assets/styles/style.css';
-import defaultDataset from './dataset.json';
 import { AnswersList, Chats } from './components/index';
 import FormDialog from './components/Forms/FormDialog';
+import { db } from './firebase/index';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export default class App extends React.Component {
       answers: [],
       chats: [],
       currentId: 'init',
-      dataset: defaultDataset,
+      dataset: {},
       open: false,
     };
     this.selectAnswer = this.selectAnswer.bind(this);
@@ -20,7 +20,7 @@ export default class App extends React.Component {
   }
 
   displayNextQuestion = (nextQuestionId) => {
-    const chats = this.state.chats;
+    const chats = this.state.chats
     chats.push({
       text: this.state.dataset[nextQuestionId].question,
       type: 'question'
@@ -78,9 +78,25 @@ export default class App extends React.Component {
     this.setState({ open: false });
   };
 
+  initDataset = (dataset) => {
+    this.setState({dataset: dataset})
+  }
+
   componentDidMount() {
-    const initAnswer = "";
-    this.selectAnswer(initAnswer, this.state.currentId);
+    (async () => {
+     const dataset = this.state.dataset
+     // 非同期処理
+     await db.collection('questions').get().then(snapshots => {
+        snapshots.forEach(doc => {
+          const id = doc.id
+          const data = doc.data()
+          dataset[id] = data
+        })
+     })
+      this.initDataset(dataset)
+      const initAnswer = "";
+      this.selectAnswer(initAnswer, this.state.currentId);
+    })()
   }
 
   // 最新のチャットが見えるようにスクロール位置の頂点（最新のチャット）をスクロール領域の最下部に設定する
